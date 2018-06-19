@@ -4,9 +4,12 @@
 
 import os
 
-jobname = "F0_" # should be short
+jobname = "F1_" # should be short
 name = "" + jobname # name of shell scripts
-res = "result_f0-EQLDIV"
+res = "result_f1-EQLDIV"
+
+mem = "2000"
+#maxtime = "4:00:00"
 
 submitfile = "submit_" + name + ".sh"
 SUBMIT = open(submitfile,'w')
@@ -14,22 +17,21 @@ SUBMIT.write("#/bin/bash\n")
 
 pwd=os.getcwd()
 
-#number of epochs!
-e=4000
+e=10000
 regstart = e/4
 regend = e-e/20
 
 i = 0
 for l1 in [10**(-l1exp/10.0) for l1exp in range(35,60)]:
-  for l_n in [3]:
+  for l_n in [2,3]:
     for normal in ([True] if i > 0 else [False, True]):
       epochs = e if  normal else 1
       result = res + "/" if normal else res + "test/"
       base_cmd = ["python src/mlfg_final.py -i ", str(i),
                   " -f ", result,
-                  " -d data/f0-n-10k-1.dat.gz",
-                  " --extrapol=data/f0-n-5k-1-test.dat.gz",
-                  " --extrapol=data/f0-n-5k-1-2-test.dat.gz",
+                  " -d data/f1-n-10k-1.dat.gz",
+                  " --extrapol=data/f1-n-5k-1-test.dat.gz",
+                  " --extrapol=data/f1-n-5k-1-2-test.dat.gz",
                   " --epochs=", str(epochs),
                   " --l1=", str(l1),
                   " --layers=", str(l_n),
@@ -67,7 +69,7 @@ print "Jobs:" , i
 
 with open("finished_" + name + ".sh",'w') as FINISHED:
   FINISHED.write("#!/bin/bash\nset -e\n" +
-                 'grep "#" $(ls ' + res + '/*.res -1 | head -n 1) >'  + res + '/all.dat\n' +
+                 'grep "#" $(ls *.res -1 | head -n 1) >'  + res + '/all.dat\n' +
                  "cat " + res + '/*.res | grep -v "#" >>' + res + '/all.dat\n' +
                  "cp " + __file__ + ' ' + res + '/\n' +
                  "rm finished_" + name+ '.sh ' + submitfile + '\n')

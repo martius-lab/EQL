@@ -8,15 +8,13 @@ jobname = "F1_" # should be short
 name = "" + jobname # name of shell scripts
 res = "result_f1-EQLDIV"
 
-mem = "2000"
-#maxtime = "4:00:00"
-
 submitfile = "submit_" + name + ".sh"
 SUBMIT = open(submitfile,'w')
 SUBMIT.write("#/bin/bash\n")
 
 pwd=os.getcwd()
 
+#number of epochs
 e=10000
 regstart = e/4
 regend = e-e/20
@@ -69,7 +67,7 @@ print "Jobs:" , i
 
 with open("finished_" + name + ".sh",'w') as FINISHED:
   FINISHED.write("#!/bin/bash\nset -e\n" +
-                 'grep "#" $(ls *.res -1 | head -n 1) >'  + res + '/all.dat\n' +
+                 'grep "#" $(ls ' + res + '/*.res -1 | head -n 1) >'  + res + '/all.dat\n' +
                  "cat " + res + '/*.res | grep -v "#" >>' + res + '/all.dat\n' +
                  "cp " + __file__ + ' ' + res + '/\n' +
                  "rm finished_" + name+ '.sh ' + submitfile + '\n')
