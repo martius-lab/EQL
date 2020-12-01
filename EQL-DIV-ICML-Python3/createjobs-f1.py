@@ -63,7 +63,7 @@ fi
 
 SUBMIT.close()
 os.chmod(submitfile,0755)
-print "Jobs:" , i
+print("Jobs:" , i)
 
 with open("finished_" + name + ".sh",'w') as FINISHED:
   FINISHED.write("#!/bin/bash\nset -e\n" +
